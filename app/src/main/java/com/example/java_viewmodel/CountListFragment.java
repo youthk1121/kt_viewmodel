@@ -58,7 +58,7 @@ public class CountListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // recycler
         countListViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.NewInstanceFactory()).get(CountListViewModel.class);
-        if (countListViewModel.getItemList() == null) {
+        if (countListViewModel.getItemList() == null || countListViewModel.getItemList().isEmpty()) {
             countListViewModel.setItemList(getDummyList());
         }
         recyclerView = view.findViewById(R.id.count_list);

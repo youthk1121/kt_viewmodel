@@ -1,5 +1,7 @@
 package com.example.java_viewmodel;
 
+import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -17,6 +19,11 @@ public class ListViewModel extends ViewModel {
 
     public void setItemList(List<ListItemValue> itemList) {
         this.itemList = itemList;
+        listMutableLiveData.setValue(itemList);
+    }
+
+    public boolean isEmpty() {
+        return itemList == null || itemList.isEmpty();
     }
 
     public LiveData<List<ListItemValue>> getLiveData() {

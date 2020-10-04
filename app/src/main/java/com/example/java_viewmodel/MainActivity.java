@@ -22,4 +22,12 @@ public class MainActivity extends FragmentActivity implements MainFragment.OnAct
                 .addToBackStack(CountListFragment.class.getSimpleName())
                 .commit();
     }
+
+    @Override
+    public void onSelectClear() {
+        getViewModelStore().clear();
+        getSupportFragmentManager().popBackStack();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MainFragment.newInstance())
+                .addToBackStack(MainFragment.class.getSimpleName()).commit();
+    }
 }

@@ -2,27 +2,21 @@ package com.example.java_viewmodel;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,6 +31,8 @@ public class MainFragment extends Fragment {
     private EditText numberInputView;
 
     private OnActivityInterActonListener interActonListener;
+
+    private ViewModelProvider newInstanceViewModelProvider;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -58,6 +54,7 @@ public class MainFragment extends Fragment {
         if (context instanceof OnActivityInterActonListener) {
             interActonListener = (OnActivityInterActonListener) context;
         }
+        newInstanceViewModelProvider = new ViewModelProvider(requireActivity(), new ViewModelProvider.NewInstanceFactory());
     }
 
     @Override
@@ -71,8 +68,8 @@ public class MainFragment extends Fragment {
         Log.d("Fragment View created", "[call]");
         super.onViewCreated(view, savedInstanceState);
         // recycler
-        listViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.NewInstanceFactory()).get(ListViewModel.class);
-        if (listViewModel.getItemList() == null) {
+        listViewModel = newInstanceViewModelProvider.get(ListViewModel.class);
+        if (listViewModel.isEmpty()) {
             listViewModel.setItemList(getDummyList());
         }
         recyclerView = view.findViewById(R.id.list);
@@ -99,6 +96,15 @@ public class MainFragment extends Fragment {
             }
         });
 
+        Button clearButton = view.findViewById(R.id.clear_button);
+        clearButton.setOnClickListener(v -> {
+            if (interActonListener != null) {
+                listViewModel.setItemList(null);
+                newInstanceViewModelProvider.get(CountListViewModel.class).setItemList(null);
+                interActonListener.onSelectClear();
+            }
+        });
+
         Button goButton = view.findViewById(R.id.go_to_count_list_button);
         goButton.setOnClickListener(v -> {
             if (interActonListener != null) {
@@ -110,6 +116,7 @@ public class MainFragment extends Fragment {
 
     public interface OnActivityInterActonListener {
         void onSelectGoToCountList();
+        void onSelectClear();
     }
 
     private List<ListItemValue> getDummyList() {

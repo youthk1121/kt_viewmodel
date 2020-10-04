@@ -41,9 +41,17 @@
         android:layout_height="0dp"
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/border_line"
-        app:layout_constraintBottom_toTopOf="@id/go_to_count_list_button"
+        app:layout_constraintBottom_toTopOf="@id/clear_button"
         tools:context=".MainFragment"
         tools:listitem="@layout/layout_list_item" />
+
+    <Button
+        android:id="@+id/clear_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/clear"
+        app:layout_constraintBottom_toTopOf="@id/go_to_count_list_button" />
 
     <Button
         android:id="@+id/go_to_count_list_button"
