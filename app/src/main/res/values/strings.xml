@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">java_viewmodel</string>
+    <string name="fix">確定</string>
+    <string name="list">一覧</string>
+    <string name="slash">/</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="go_to_count_list">Go to Count List</string>
+</resources>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <Button
+        android:id="@+id/minus_button"
+        style="?buttonBarStyle"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/minus"
+        android:textSize="16sp"
+        android:padding="0dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:background="@color/gray_button_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/item_current_count" />
+
+    <TextView
+        android:id="@+id/item_current_count"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        app:layout_constraintRight_toLeftOf="@id/slash"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <TextView
+        android:id="@+id/slash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        app:layout_constraintRight_toLeftOf="@id/item_init_count"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:text="@string/slash"/>
+
+    <TextView
+        android:id="@+id/item_init_count"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/plus_button"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <Button
+        android:id="@+id/plus_button"
+        style="?buttonBarStyle"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:text="@string/plus"
+        android:textSize="16sp"
+        android:padding="0dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:background="@color/gray_button_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
