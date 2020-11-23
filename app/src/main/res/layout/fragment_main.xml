@@ -42,7 +42,7 @@
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/border_line"
         app:layout_constraintBottom_toTopOf="@id/clear_button"
-        tools:context=".MainFragment"
+        tools:context=".mainlist.MainFragment"
         tools:listitem="@layout/layout_list_item" />
 
     <Button

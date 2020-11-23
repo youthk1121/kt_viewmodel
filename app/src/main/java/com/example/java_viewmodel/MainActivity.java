@@ -4,6 +4,9 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
 
+import com.example.java_viewmodel.countlist.CountListFragment;
+import com.example.java_viewmodel.mainlist.MainFragment;
+
 public class MainActivity extends FragmentActivity implements MainFragment.OnActivityInterActonListener {
 
     @Override
