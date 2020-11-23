@@ -4,16 +4,22 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class ListItemValue {
+    private final long id;
     private String name;
     private String number;
     private long initCount;
     private final MutableLiveData<Long> currentCountLiveData = new MutableLiveData<>();
 
-    public ListItemValue(String name, String number,  long initCount) {
+    public ListItemValue(long id, String name, String number,  long initCount, long currentCount) {
+        this.id = id;
         this.name = name;
         this.number = number;
         this.initCount = initCount;
-        this.currentCountLiveData.setValue(initCount);
+        this.currentCountLiveData.setValue(currentCount);
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {

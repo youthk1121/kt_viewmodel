@@ -20,9 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.java_viewmodel.R;
 import com.example.java_viewmodel.countlist.CountListViewModel;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * A fragment representing a list of Items.
  */
@@ -57,7 +54,7 @@ public class MainFragment extends Fragment {
         if (context instanceof OnActivityInterActonListener) {
             interActonListener = (OnActivityInterActonListener) context;
         }
-        newInstanceViewModelProvider = new ViewModelProvider(requireActivity(), new ViewModelProvider.NewInstanceFactory());
+        newInstanceViewModelProvider = new ViewModelProvider(requireActivity());
     }
 
     @Override
@@ -71,14 +68,14 @@ public class MainFragment extends Fragment {
         Log.d("Fragment View created", "[call]");
         super.onViewCreated(view, savedInstanceState);
         // recycler
-        listViewModel = newInstanceViewModelProvider.get(ListViewModel.class);
-        if (listViewModel.isEmpty()) {
-            listViewModel.setItemList(getDummyList());
-        }
+        listViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ListViewModel.class);
+
         recyclerView = view.findViewById(R.id.list);
         Context context = view.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(new ItemRecyclerViewAdapter(this, listViewModel));
+        ItemRecyclerViewAdapter recyclerViewAdapter = new ItemRecyclerViewAdapter(getViewLifecycleOwner());
+        recyclerView.setAdapter(recyclerViewAdapter);
+        listViewModel.getLiveData().observe(getViewLifecycleOwner(), recyclerViewAdapter::submitList);
 
         // button
         numberInputView = view.findViewById(R.id.code_input);
@@ -101,11 +98,12 @@ public class MainFragment extends Fragment {
 
         Button clearButton = view.findViewById(R.id.clear_button);
         clearButton.setOnClickListener(v -> {
-            if (interActonListener != null) {
-                listViewModel.setItemList(null);
-                newInstanceViewModelProvider.get(CountListViewModel.class).setItemList(null);
-                interActonListener.onSelectClear();
-            }
+            listViewModel.populateData();
+//            if (interActonListener != null) {
+////                listViewModel.setItemList(null);
+////                newInstanceViewModelProvider.get(CountListViewModel.class).setItemList(null);
+//                interActonListener.onSelectClear();
+//            }
         });
 
         Button goButton = view.findViewById(R.id.go_to_count_list_button);
@@ -117,22 +115,14 @@ public class MainFragment extends Fragment {
         Log.d("Fragment View created", String.format("  - ViewModel:%s", listViewModel.toString()));
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        listViewModel.saveList();
+    }
+
     public interface OnActivityInterActonListener {
         void onSelectGoToCountList();
         void onSelectClear();
-    }
-
-    private List<ListItemValue> getDummyList() {
-        ListItemValue item1 = new ListItemValue("name1", "1", 1);
-        ListItemValue item2 = new ListItemValue("name2", "2", 2);
-        ListItemValue item3 = new ListItemValue("name3", "3", 3);
-        ListItemValue item4 = new ListItemValue("name4", "4", 4);
-        ListItemValue item5 = new ListItemValue("name5", "5", 5);
-        ListItemValue item6 = new ListItemValue("name6", "6", 6);
-        ListItemValue item7 = new ListItemValue("name7", "7", 7);
-        ListItemValue item8 = new ListItemValue("name8", "8", 8);
-        ListItemValue item9 = new ListItemValue("name9", "9", 9);
-        ListItemValue item10 = new ListItemValue("name10", "10", 10);
-        return Arrays.asList(item1,item2,item3,item4,item5,item6,item7,item8,item9,item10);
     }
 }
