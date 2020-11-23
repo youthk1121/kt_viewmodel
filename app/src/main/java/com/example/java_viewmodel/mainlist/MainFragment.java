@@ -32,8 +32,6 @@ public class MainFragment extends Fragment {
 
     private OnActivityInterActonListener interActonListener;
 
-    private ViewModelProvider newInstanceViewModelProvider;
-
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -54,7 +52,6 @@ public class MainFragment extends Fragment {
         if (context instanceof OnActivityInterActonListener) {
             interActonListener = (OnActivityInterActonListener) context;
         }
-        newInstanceViewModelProvider = new ViewModelProvider(requireActivity());
     }
 
     @Override

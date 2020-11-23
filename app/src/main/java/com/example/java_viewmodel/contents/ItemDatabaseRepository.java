@@ -15,19 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ItemDatabaseRepository {
-//    private static ItemDatabaseRepository INSTANCE;
-
-//    private ItemDatabaseRepository(){}
-
-//    public static ItemDatabaseRepository getInstance() {
-//        if (INSTANCE != null) {
-//            return INSTANCE;
-//        }
-//        synchronized (ItemDatabaseRepository.class) {
-//            INSTANCE = new ItemDatabaseRepository();
-//            return INSTANCE;
-//        }
-//    }
 
     private final ItemDao mItemDao;
 
