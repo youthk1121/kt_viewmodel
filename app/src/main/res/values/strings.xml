@@ -7,4 +7,5 @@
     <string name="minus">-</string>
     <string name="go_to_count_list">Go to Count List</string>
     <string name="clear">clear</string>
+    <string name="input_number">input number</string>
 </resources>
