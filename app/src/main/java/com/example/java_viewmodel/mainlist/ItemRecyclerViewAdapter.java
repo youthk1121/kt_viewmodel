@@ -8,23 +8,39 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.java_viewmodel.R;
 
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * {@link RecyclerView.Adapter}
  */
-public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerViewAdapter.ViewHolder> {
+public class ItemRecyclerViewAdapter extends ListAdapter<ListItemValue, ItemRecyclerViewAdapter.ViewHolder> {
 
-    private LifecycleOwner viewLifecycleOwner;
-    private ListViewModel listViewModel;
+    private final LifecycleOwner viewLifecycleOwner;
 
-    public ItemRecyclerViewAdapter(LifecycleOwner viewLifecycleOwner, ListViewModel listViewModel) {
+    private static DiffUtil.ItemCallback<ListItemValue> getItemCallback() {
+        return new DiffUtil.ItemCallback<ListItemValue>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull ListItemValue oldItem, @NonNull ListItemValue newItem) {
+                return oldItem == newItem;
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull ListItemValue oldItem, @NonNull ListItemValue newItem) {
+                return Objects.equals(oldItem.getNumber(), newItem.getNumber());
+            }
+        };
+    }
+
+    public ItemRecyclerViewAdapter(LifecycleOwner viewLifecycleOwner) {
+        super(getItemCallback());
         this.viewLifecycleOwner = viewLifecycleOwner;
-        this.listViewModel = listViewModel;
     }
 
     @NonNull
@@ -36,14 +52,9 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = listViewModel.getItemList().get(position);
-        holder.mNameView.setText(listViewModel.getItemList().get(position).getName());
-        listViewModel.getItemList().get(position).getCurrentCountLiveData().observe(viewLifecycleOwner, holder.observer);
-    }
-
-    @Override
-    public int getItemCount() {
-        return listViewModel.getItemList().size();
+        holder.mItem = getItem(position);
+        holder.mNameView.setText(getItem(position).getName());
+        getItem(position).getCurrentCountLiveData().observe(viewLifecycleOwner, holder.observer);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -52,7 +63,7 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
         public final TextView mCountView;
         public ListItemValue mItem;
 
-        private Observer<Long> observer = new Observer<Long>() {
+        private final Observer<Long> observer = new Observer<Long>() {
             @Override
             public void onChanged(Long aLong) {
                 mCountView.setText(String.format(Locale.getDefault(), "%d", aLong));

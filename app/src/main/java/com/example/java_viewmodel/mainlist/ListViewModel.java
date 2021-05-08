@@ -1,15 +1,33 @@
 package com.example.java_viewmodel.mainlist;
 
+import android.app.Application;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+
+import com.example.java_viewmodel.contents.ItemDatabaseRepository;
 
 import java.util.List;
 
-public class ListViewModel extends ViewModel {
+public class ListViewModel extends AndroidViewModel {
+
+    private final ItemDatabaseRepository itemDatabaseRepository;
+
     private List<ListItemValue> itemList;
-    private MutableLiveData<List<ListItemValue>> listMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<ListItemValue>> listMutableLiveData = new MutableLiveData<>();
+
+    public ListViewModel(@NonNull Application application) {
+        super(application);
+        itemDatabaseRepository = new ItemDatabaseRepository(application);
+        LiveData<List<ListItemValue>> initItemValues = itemDatabaseRepository.getAllItemValues();
+        initItemValues.observeForever(initValueList -> {
+            itemList = initValueList;
+            listMutableLiveData.postValue(initValueList);
+        });
+    }
 
     public List<ListItemValue> getItemList() {
         return itemList;
@@ -51,4 +69,37 @@ public class ListViewModel extends ViewModel {
         item.setCurrentCount(item.getCurrentCount() - count);
         return true;
     }
+
+    public void populateData() {
+        itemDatabaseRepository.populateItemData();
+    }
+
+    public void saveList() {
+        Log.d("ListViewModel", "numbers=" + String.join(",", listMutableLiveData.getValue().stream().map(o -> String.valueOf(o.getCurrentCount())).toArray(String[]::new)));
+        itemDatabaseRepository.clearInsertList(listMutableLiveData.getValue());
+    }
+
+//    public static class ListViewModelFactory implements ViewModelProvider.Factory {
+//
+//        @NonNull
+//        private final Application application;
+//
+//        private final long minInitCount;
+//
+//        public ListViewModelFactory(@NonNull Application application, long minInitCount) {
+//            this.application = application;
+//            this.minInitCount = minInitCount;
+//        }
+//
+//        @SuppressWarnings("unchecked")
+//        @NonNull
+//        @Override
+//        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+//            if (modelClass == ListViewModel.class) {
+//                return (T) new ListViewModel(application, minInitCount);
+//            } else {
+//                return null;
+//            }
+//        }
+//    }
 }
