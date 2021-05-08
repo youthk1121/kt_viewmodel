@@ -65,7 +65,7 @@ public class MainFragment extends Fragment {
         Log.d("Fragment View created", "[call]");
         super.onViewCreated(view, savedInstanceState);
         // recycler
-        listViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ListViewModel.class);
+        listViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(ListViewModel.class);
 
         recyclerView = view.findViewById(R.id.list);
         Context context = view.getContext();
@@ -94,14 +94,7 @@ public class MainFragment extends Fragment {
         });
 
         Button clearButton = view.findViewById(R.id.clear_button);
-        clearButton.setOnClickListener(v -> {
-            listViewModel.populateData();
-//            if (interActonListener != null) {
-////                listViewModel.setItemList(null);
-////                newInstanceViewModelProvider.get(CountListViewModel.class).setItemList(null);
-//                interActonListener.onSelectClear();
-//            }
-        });
+        clearButton.setOnClickListener(v -> listViewModel.populateData());
 
         Button goButton = view.findViewById(R.id.go_to_count_list_button);
         goButton.setOnClickListener(v -> {
@@ -120,6 +113,5 @@ public class MainFragment extends Fragment {
 
     public interface OnActivityInterActonListener {
         void onSelectGoToCountList();
-        void onSelectClear();
     }
 }
