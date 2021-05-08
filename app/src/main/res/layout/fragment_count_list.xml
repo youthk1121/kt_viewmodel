@@ -7,7 +7,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/count_list"
-        android:name="com.example.java_viewmodel.ItemFragment"
+        android:name="com.example.kt_viewmodel.ItemFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"

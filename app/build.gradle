@@ -5,7 +5,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.example.java_viewmodel"
+        applicationId "com.example.kt_viewModel"
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1

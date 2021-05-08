@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">java_viewmodel</string>
+    <string name="app_name">kt_viewmodel</string>
     <string name="fix">確定</string>
     <string name="list">一覧</string>
     <string name="slash">/</string>

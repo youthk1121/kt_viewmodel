@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "java_viewmodel"
+rootProject.name = "kt_viewmodel"

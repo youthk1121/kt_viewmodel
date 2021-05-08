@@ -37,7 +37,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
-        android:name="com.example.java_viewmodel.ItemFragment"
+        android:name="com.example.kt_viewmodel.ItemFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="LinearLayoutManager"
