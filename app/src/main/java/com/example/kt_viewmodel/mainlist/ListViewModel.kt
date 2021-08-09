@@ -2,7 +2,6 @@ package com.example.kt_viewmodel.mainlist
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.kt_viewmodel.contents.ItemDatabaseRepository
@@ -14,25 +13,14 @@ class ListViewModel @Inject constructor(
     private val itemDatabaseRepository: ItemDatabaseRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private var itemList: List<ListItemValue>? = null
-    private val listMutableLiveData = MutableLiveData<List<ListItemValue>>()
-    fun setItemList(itemList: List<ListItemValue>) {
-        this.itemList = itemList
-        listMutableLiveData.value = itemList
-    }
-
-    val isEmpty: Boolean
-        get() = itemList?.isEmpty() ?:false
-
-    val liveData: LiveData<List<ListItemValue>>
-        get() = listMutableLiveData
+    private val _itemList = itemDatabaseRepository.getAllItemValues()
+    val itemList: LiveData<List<ListItemValue>>
+        get() = _itemList
 
     fun getItemIndex(number: String): Int {
-        if (itemList == null) {
-            return -1
-        }
-        for (i in itemList!!.indices) {
-            if (number == itemList!![i].number) {
+        val list = _itemList.value ?: return -1
+        for (i in list.indices) {
+            if (number == list[i].number) {
                 return i
             }
         }
@@ -40,10 +28,8 @@ class ListViewModel @Inject constructor(
     }
 
     fun decreaseItemCount(index: Int, count: Int): Boolean {
-        if (itemList == null) {
-            return false
-        }
-        val item = itemList!![index]
+        val list = _itemList.value ?: return false
+        val item = list[index]
         if (item.currentCount < count) {
             return false
         }
@@ -56,15 +42,7 @@ class ListViewModel @Inject constructor(
     }
 
     fun saveList() {
-        Log.d("ListViewModel", "numbers=" + listMutableLiveData.value?.joinToString(",") { o: ListItemValue -> o.currentCount.toString() })
-        itemDatabaseRepository.clearInsertList(listMutableLiveData.value)
-    }
-
-    init {
-        val initItemValues = itemDatabaseRepository.getAllItemValues()
-        initItemValues.observeForever { initValueList: List<ListItemValue> ->
-            itemList = initValueList
-            listMutableLiveData.postValue(initValueList)
-        }
+        Log.d("ListViewModel", "numbers=" + _itemList.value?.joinToString(",") { o -> o.currentCount.toString() })
+        itemDatabaseRepository.clearInsertList(_itemList.value)
     }
 }

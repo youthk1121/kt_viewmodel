@@ -7,14 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.kt_viewmodel.R
 import com.example.kt_viewmodel.databinding.FragmentMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,11 +43,10 @@ class MainFragment: Fragment() {
         Log.d("Fragment View created", "[call]")
         super.onViewCreated(view, savedInstanceState)
         // recycler
-        val context = view.context
-        binding.list.layoutManager = LinearLayoutManager(context)
+        binding.list.layoutManager = LinearLayoutManager(view.context)
         val recyclerViewAdapter = ItemRecyclerViewAdapter(viewLifecycleOwner)
         binding.list.adapter = recyclerViewAdapter
-        listViewModel.liveData.observe(viewLifecycleOwner, { list: List<ListItemValue?> -> recyclerViewAdapter.submitList(list) })
+        listViewModel.itemList.observe(viewLifecycleOwner, { list -> recyclerViewAdapter.submitList(list) })
 
         binding.button.setOnClickListener {
             if (binding.list.adapter == null) {
@@ -60,12 +55,12 @@ class MainFragment: Fragment() {
             val number = binding.codeInput.text.toString()
             val index = listViewModel.getItemIndex(number)
             if (index < 0) {
-                Toast.makeText(getContext(), "該当項目がありません", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "該当項目がありません", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             val successDecrease = listViewModel.decreaseItemCount(index, 1)
             if (!successDecrease) {
-                Toast.makeText(getContext(), "これ以上減らせません", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "これ以上減らせません", Toast.LENGTH_SHORT).show()
             }
         }
         val clearButton = view.findViewById<Button>(R.id.clear_button)

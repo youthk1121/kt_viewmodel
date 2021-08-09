@@ -6,41 +6,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.NewInstanceFactory
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.kt_viewmodel.R
-import java.util.*
+import com.example.kt_viewmodel.databinding.FragmentCountListBinding
+import java.util.Arrays
 
 /**
  * A fragment representing a list of Items.
  */
-class CountListFragment
-/**
- * Mandatory empty constructor for the fragment manager to instantiate the
- * fragment (e.g. upon screen orientation changes).
- */
-    : Fragment() {
-    private var countListViewModel: CountListViewModel? = null
-    private var recyclerView: RecyclerView? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+class CountListFragment: Fragment() {
+    private val countListViewModel: CountListViewModel by viewModels()
+    private lateinit var binding: FragmentCountListBinding
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d("Fragment create View", "[call]")
-        return inflater.inflate(R.layout.fragment_count_list, container, false)
+        binding = FragmentCountListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d("Fragment View created", "[call]")
         super.onViewCreated(view, savedInstanceState)
         // recycler
-        countListViewModel = ViewModelProvider(requireActivity(), NewInstanceFactory()).get(CountListViewModel::class.java)
-        if (countListViewModel!!.itemList == null || countListViewModel!!.itemList!!.isEmpty()) {
-            countListViewModel!!.itemList = dummyList
+        if (countListViewModel.itemList == null || countListViewModel.itemList!!.isEmpty()) {
+            countListViewModel.itemList = dummyList
         }
-        recyclerView = view.findViewById(R.id.count_list)
-        val context = view.context
-        recyclerView?.layoutManager = LinearLayoutManager(context)
-        recyclerView?.adapter = CountListRecyclerAdapter(this, countListViewModel!!)
+        binding.countList.layoutManager = LinearLayoutManager(view.context)
+        binding.countList.adapter = CountListRecyclerAdapter(this, countListViewModel)
         Log.d("Fragment View created", String.format("  - ViewModel:%s", countListViewModel.toString()))
     }
 
