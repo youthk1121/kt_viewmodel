@@ -5,7 +5,9 @@ import androidx.fragment.app.FragmentActivity
 import com.example.kt_viewmodel.countlist.CountListFragment
 import com.example.kt_viewmodel.mainlist.MainFragment
 import com.example.kt_viewmodel.mainlist.MainFragment.OnActivityInterActonListener
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : FragmentActivity(), OnActivityInterActonListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

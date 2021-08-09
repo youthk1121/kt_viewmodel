@@ -1,14 +1,19 @@
 package com.example.kt_viewmodel.mainlist
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import com.example.kt_viewmodel.contents.ItemDatabaseRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ListViewModel(application: Application) : AndroidViewModel(application) {
-    private val itemDatabaseRepository: ItemDatabaseRepository = ItemDatabaseRepository(application)
+@HiltViewModel
+class ListViewModel @Inject constructor(
+    private val itemDatabaseRepository: ItemDatabaseRepository,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
     private var itemList: List<ListItemValue>? = null
     private val listMutableLiveData = MutableLiveData<List<ListItemValue>>()
     fun setItemList(itemList: List<ListItemValue>) {
@@ -53,32 +58,10 @@ class ListViewModel(application: Application) : AndroidViewModel(application) {
     fun saveList() {
         Log.d("ListViewModel", "numbers=" + listMutableLiveData.value?.joinToString(",") { o: ListItemValue -> o.currentCount.toString() })
         itemDatabaseRepository.clearInsertList(listMutableLiveData.value)
-    } //    public static class ListViewModelFactory implements ViewModelProvider.Factory {
+    }
 
-    //
-    //        @NonNull
-    //        private final Application application;
-    //
-    //        private final long minInitCount;
-    //
-    //        public ListViewModelFactory(@NonNull Application application, long minInitCount) {
-    //            this.application = application;
-    //            this.minInitCount = minInitCount;
-    //        }
-    //
-    //        @SuppressWarnings("unchecked")
-    //        @NonNull
-    //        @Override
-    //        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-    //            if (modelClass == ListViewModel.class) {
-    //                return (T) new ListViewModel(application, minInitCount);
-    //            } else {
-    //                return null;
-    //            }
-    //        }
-    //    }
     init {
-        val initItemValues = itemDatabaseRepository.allItemValues
+        val initItemValues = itemDatabaseRepository.getAllItemValues()
         initItemValues.observeForever { initValueList: List<ListItemValue> ->
             itemList = initValueList
             listMutableLiveData.postValue(initValueList)
