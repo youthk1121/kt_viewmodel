@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.kt_viewmodel.contents.ItemDatabaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,11 +40,16 @@ class ListViewModel @Inject constructor(
     }
 
     fun populateData() {
-        itemDatabaseRepository.populateItemData()
+        viewModelScope.launch {
+            itemDatabaseRepository.populateItemData()
+        }
     }
 
     fun saveList() {
         Log.d("ListViewModel", "numbers=" + _itemList.value?.joinToString(",") { o -> o.currentCount.toString() })
-        itemDatabaseRepository.clearInsertList(_itemList.value)
+
+        viewModelScope.launch {
+            itemDatabaseRepository.clearInsertList(_itemList.value)
+        }
     }
 }

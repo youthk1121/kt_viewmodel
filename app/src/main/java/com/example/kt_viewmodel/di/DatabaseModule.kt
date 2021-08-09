@@ -11,25 +11,32 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
-    private lateinit var itemDatabase: ItemDatabase
-
     @Provides
     @Singleton
-    fun provideItemDatabase(@ApplicationContext appContext: Context): ItemDatabase {
+    fun provideItemDatabase(
+        @ApplicationContext appContext: Context, scope: CoroutineScope
+    ): ItemDatabase {
+
+        var itemDatabase: ItemDatabase? = null
+
         itemDatabase = Room.databaseBuilder(
             appContext,
             ItemDatabase::class.java,
             "item_database"
-        ).addCallback(object: RoomDatabase.Callback() {
+        ).addCallback(object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                itemDatabase.populateDatabase()
+                scope.launch {
+                    itemDatabase?.populateDatabase()
+                }
             }
         }).build()
         return itemDatabase

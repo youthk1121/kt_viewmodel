@@ -10,9 +10,9 @@ interface ItemDatabaseRepository {
 
     fun getParticularItemValues(minInitCount: Long): LiveData<List<ListItemValue>>
 
-    fun insert(itemEntity: ItemEntity?)
+    suspend fun insert(listItemValue: ListItemValue)
 
-    fun clearInsertList(itemValueList: List<ListItemValue>?)
+    suspend fun clearInsertList(itemValueList: List<ListItemValue>?)
 
-    fun populateItemData()
+    suspend fun populateItemData()
 }
