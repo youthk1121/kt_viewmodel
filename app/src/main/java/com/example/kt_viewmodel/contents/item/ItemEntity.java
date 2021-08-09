@@ -2,6 +2,7 @@ package com.example.kt_viewmodel.contents.item;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -21,6 +22,7 @@ public class ItemEntity {
     public ItemEntity() {
     }
 
+    @Ignore
     public ItemEntity(String name, String number, long initCount, long currentCount) {
         this.name = name;
         this.number = number;
@@ -28,6 +30,7 @@ public class ItemEntity {
         this.currentCount = currentCount;
     }
 
+    @Ignore
     public ItemEntity(long id, String name, String number, long initCount, long currentCount) {
         this.id = id;
         this.name = name;

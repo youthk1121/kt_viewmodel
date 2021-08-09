@@ -7,28 +7,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.kt_viewmodel.R
+import com.example.kt_viewmodel.databinding.FragmentMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A fragment representing a list of Items.
  */
-class MainFragment
-/**
- * Mandatory empty constructor for the fragment manager to instantiate the
- * fragment (e.g. upon screen orientation changes).
- */
-    : Fragment() {
-    private var listViewModel: ListViewModel? = null
-    private var recyclerView: RecyclerView? = null
-    private var numberInputView: EditText? = null
-    private var interActonListener: OnActivityInterActonListener? = null
+@AndroidEntryPoint
+class MainFragment: Fragment() {
+    private val listViewModel: ListViewModel by viewModels()
+
+    private lateinit var binding: FragmentMainBinding
+
+    private lateinit var interActonListener: OnActivityInterActonListener
+    
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnActivityInterActonListener) {
@@ -36,55 +33,49 @@ class MainFragment
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d("Fragment create View", "[call]")
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        binding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d("Fragment View created", "[call]")
         super.onViewCreated(view, savedInstanceState)
         // recycler
-        listViewModel = ViewModelProvider(this, AndroidViewModelFactory(requireActivity().application)).get(ListViewModel::class.java)
-        recyclerView = view.findViewById(R.id.list)
-        val context = view.context
-        recyclerView?.setLayoutManager(LinearLayoutManager(context))
+        binding.list.layoutManager = LinearLayoutManager(view.context)
         val recyclerViewAdapter = ItemRecyclerViewAdapter(viewLifecycleOwner)
-        recyclerView?.setAdapter(recyclerViewAdapter)
-        listViewModel!!.liveData.observe(viewLifecycleOwner, { list: List<ListItemValue?> -> recyclerViewAdapter.submitList(list) })
+        binding.list.adapter = recyclerViewAdapter
+        listViewModel.itemList.observe(viewLifecycleOwner, { list -> recyclerViewAdapter.submitList(list) })
 
-        // button
-        numberInputView = view.findViewById(R.id.code_input)
-        val button = view.findViewById<Button>(R.id.button)
-        button.setOnClickListener { v: View? ->
-            if (recyclerView == null || recyclerView!!.adapter == null || numberInputView == null) {
+        binding.button.setOnClickListener {
+            if (binding.list.adapter == null) {
                 return@setOnClickListener
             }
-            val number = numberInputView!!.text.toString()
-            val index = listViewModel!!.getItemIndex(number)
+            val number = binding.codeInput.text.toString()
+            val index = listViewModel.getItemIndex(number)
             if (index < 0) {
-                Toast.makeText(getContext(), "該当項目がありません", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "該当項目がありません", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val successDecrease = listViewModel!!.decreaseItemCount(index, 1)
+            val successDecrease = listViewModel.decreaseItemCount(index, 1)
             if (!successDecrease) {
-                Toast.makeText(getContext(), "これ以上減らせません", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "これ以上減らせません", Toast.LENGTH_SHORT).show()
             }
         }
         val clearButton = view.findViewById<Button>(R.id.clear_button)
-        clearButton.setOnClickListener { v: View? -> listViewModel!!.populateData() }
+        clearButton.setOnClickListener { listViewModel.populateData() }
         val goButton = view.findViewById<Button>(R.id.go_to_count_list_button)
-        goButton.setOnClickListener { v: View? ->
-            if (interActonListener != null) {
-                interActonListener!!.onSelectGoToCountList()
-            }
+        goButton.setOnClickListener {
+            interActonListener.onSelectGoToCountList()
+            
         }
         Log.d("Fragment View created", String.format("  - ViewModel:%s", listViewModel.toString()))
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        listViewModel!!.saveList()
+        listViewModel.saveList()
     }
 
     interface OnActivityInterActonListener {
